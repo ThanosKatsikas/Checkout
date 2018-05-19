@@ -3,10 +3,11 @@ package test.com.checkoutKata.services;
 
 import com.checkoutKata.model.GroceryItem;
 import com.checkoutKata.services.SuperMarketCheckout;
-import com.sun.tools.javac.util.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SuperMarketCheckoutTest {
 
@@ -14,11 +15,11 @@ class SuperMarketCheckoutTest {
     void canScanItems() {
         SuperMarketCheckout toTest = new SuperMarketCheckout();
 
-        toTest.scanItem(new GroceryItem("A", new BigDecimal("5.0")).getStoreKeepingUnit());
-        toTest.scanItem(new GroceryItem("B", new BigDecimal("6.0")).getStoreKeepingUnit());
-        toTest.scanItem(new GroceryItem("A", new BigDecimal("5.0")).getStoreKeepingUnit());
+        toTest.scanItem(new GroceryItem("A", new BigDecimal("5.0")).getStockKeepingUnit());
+        toTest.scanItem(new GroceryItem("B", new BigDecimal("6.0")).getStockKeepingUnit());
+        toTest.scanItem(new GroceryItem("A", new BigDecimal("5.0")).getStockKeepingUnit());
 
-        Assert(toTest.countItems().size(), 3);
+        assertEquals(new Integer(3), toTest.countScannedItems());
     }
 
 }
