@@ -23,6 +23,14 @@ public class SuperMarketOffersService implements OffersService{
         }
     }
 
+    public Offer getOffer(String stockKeepingUnit) {
+        try {
+            return offerStore.getOffer(stockKeepingUnit);
+        } catch (OfferNotFoundException e) {
+            return null;
+        }
+    }
+
     @Override
     public void registerOffer(Offer offer) {
         offerStore.storeOffer(offer);

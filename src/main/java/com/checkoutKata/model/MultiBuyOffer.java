@@ -14,7 +14,7 @@ public class MultiBuyOffer extends Offer {
         calculateReduction();
     }
 
-    public int getNumberOfItems() {
+    public Integer getNumberOfItems() {
         return numberOfItems;
     }
 
