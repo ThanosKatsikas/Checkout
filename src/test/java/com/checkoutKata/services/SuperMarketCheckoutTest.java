@@ -1,4 +1,4 @@
-package test.com.checkoutKata.services;
+package com.checkoutKata.services;
 
 
 import com.checkoutKata.exceptions.OfferNotFoundException;
