@@ -31,7 +31,7 @@ public class SuperMarketWarehouse implements ItemStore {
 
     @Override
     public BigDecimal retrieveItemPrice(String stockKeepingUnit) throws ItemNotFoundException {
-        Optional<Item> returnedPrice = Optional.of(groceriesStock.get(stockKeepingUnit));
+        Optional<Item> returnedPrice = Optional.ofNullable(groceriesStock.get(stockKeepingUnit));
 
         return returnedPrice.orElseThrow(ItemNotFoundException::new).getUnitPrice();
     }

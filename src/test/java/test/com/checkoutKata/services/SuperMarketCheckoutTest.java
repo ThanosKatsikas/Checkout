@@ -4,33 +4,38 @@ package test.com.checkoutKata.services;
 import com.checkoutKata.model.GroceryItem;
 import com.checkoutKata.repository.SuperMarketWarehouse;
 import com.checkoutKata.services.SuperMarketCheckout;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SuperMarketCheckoutTest {
 
+    private SuperMarketCheckout checkout;
+    private SuperMarketWarehouse warehouse;
+
+    @BeforeEach
+    void prepareSuperMarket () {
+        warehouse = new SuperMarketWarehouse();
+        checkout = new SuperMarketCheckout(warehouse);
+    }
+
     @Test
     void canScanItems() {
-        SuperMarketCheckout toTest = new SuperMarketCheckout();
+        checkout.scanItem(new GroceryItem("A", new BigDecimal("5.0")).getStockKeepingUnit());
+        checkout.scanItem(new GroceryItem("B", new BigDecimal("6.0")).getStockKeepingUnit());
+        checkout.scanItem(new GroceryItem("A", new BigDecimal("5.0")).getStockKeepingUnit());
 
-        toTest.scanItem(new GroceryItem("A", new BigDecimal("5.0")).getStockKeepingUnit());
-        toTest.scanItem(new GroceryItem("B", new BigDecimal("6.0")).getStockKeepingUnit());
-        toTest.scanItem(new GroceryItem("A", new BigDecimal("5.0")).getStockKeepingUnit());
-
-        assertEquals(new Integer(3), toTest.countScannedItems());
+        assertEquals(new Integer(3), checkout.countScannedItems());
     }
 
     @Test
     void shouldReturnZeroIfThereAreNoItemsScanned() {
-        SuperMarketCheckout toTest = new SuperMarketCheckout();
-
-        assertEquals(new Integer(0), toTest.countScannedItems());
+        assertEquals(new Integer(0), checkout.countScannedItems());
     }
 
     @Test
@@ -44,39 +49,52 @@ class SuperMarketCheckoutTest {
         itemsInStore.put(groceryC.getStockKeepingUnit(), groceryC);
 
         // First we will need to somehow register the items and their price
-        SuperMarketWarehouse warehouse = new SuperMarketWarehouse();
         warehouse.storeItem(groceryA);
         warehouse.storeItem(groceryB);
         warehouse.storeItem(groceryC);
-
 
         assertTrue(itemsInStore.equals(warehouse.getItemsInStock()));
     }
 
     @Test
     void canReturnTheTotalCheckoutPriceForAllItemsScanned() {
-        SuperMarketWarehouse warehouse = new SuperMarketWarehouse();
         warehouse.storeItem(new GroceryItem("A", new BigDecimal("5.0")));
         warehouse.storeItem(new GroceryItem("B", new BigDecimal("6.55")));
         warehouse.storeItem(new GroceryItem("C", new BigDecimal("4.22")));
         warehouse.storeItem(new GroceryItem("A", new BigDecimal("5.0")));
 
-        SuperMarketCheckout toTest = new SuperMarketCheckout(warehouse);
-        toTest.scanItem("A");
-        toTest.scanItem("B");
-        toTest.scanItem("C");
+        checkout.scanItem("A");
+        checkout.scanItem("B");
+        checkout.scanItem("C");
 
-        assertEquals(new BigDecimal("15.77"), toTest.calculateTotal());
+        assertEquals(new BigDecimal("15.77"), checkout.calculateTotal());
     }
 
     @Test
-    void shouldReturnTotalOfZeroIfWeaddItemThatDoesNotExist() {
+    void shouldReturnTotalOfZeroIfWeAddItemThatDoesNotExist() {
+        checkout.scanItem("D");
+        checkout.scanItem("E");
 
+        assertEquals(BigDecimal.ZERO, checkout.calculateTotal());
     }
 
     @Test
     void shouldReturnZeroTotalIfThereAreNoItemsScanned() {
+        assertEquals(BigDecimal.ZERO, checkout.calculateTotal());
+    }
 
+    @Test
+    void canRegisterXforYOffers() {
+        GroceryItem groceryItem = new GroceryItem("A", new BigDecimal("5.0"));
+
+        SuperMarketOffersService offersService = new SuperMarketOffersService();
+        MultipleBuyOffer offerA = new MultipleBuyOffer(groceryItem, 2, new BigDecimal("8.0"));
+
+        offersService.register(offerA);
+
+        assertEquals(offersService.getOffer("A").getNumberOfItems(), offerA.getNumberOfItems());
+        assertEquals(offersService.getOffer("A").getSpecialPrice(), offerA.getSpecialPrice());
+        assertEquals(offersService.getOffer("A").getDiscount(), offerA.getDiscount());
     }
 
     @Test
