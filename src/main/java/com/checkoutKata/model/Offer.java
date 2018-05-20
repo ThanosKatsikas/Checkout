@@ -3,19 +3,21 @@ package com.checkoutKata.model;
 import java.math.BigDecimal;
 
 public abstract class Offer {
-    private Integer numberOfItems;
-    private BigDecimal specialPrice;
 
-    public Offer(Integer numberOfItems, BigDecimal specialPrice) {
-        this.numberOfItems = numberOfItems;
-        this.specialPrice = specialPrice;
+    protected BigDecimal discount;
+    protected final Item item;
+
+    Offer(Item item) {
+        this.item = item;
     }
 
-    public Integer getNumberOfItems() {
-        return numberOfItems;
+    abstract void calculateReduction();
+
+    public BigDecimal getDiscount() {
+        return discount;
     }
 
-    public BigDecimal getSpecialPrice() {
-        return specialPrice;
+    public Item getItem() {
+        return item;
     }
 }

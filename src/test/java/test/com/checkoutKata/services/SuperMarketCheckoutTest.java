@@ -1,9 +1,13 @@
 package test.com.checkoutKata.services;
 
 
+import com.checkoutKata.exceptions.OfferNotFoundException;
 import com.checkoutKata.model.GroceryItem;
+import com.checkoutKata.model.MultiBuyOffer;
+import com.checkoutKata.repository.SuperMarketOfferStore;
 import com.checkoutKata.repository.SuperMarketWarehouse;
 import com.checkoutKata.services.SuperMarketCheckout;
+import com.checkoutKata.services.SuperMarketOffersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -84,18 +88,50 @@ class SuperMarketCheckoutTest {
     }
 
     @Test
-    void canRegisterXforYOffers() {
+    void canRegisterMultiBuyOffers() {
         GroceryItem groceryItem = new GroceryItem("A", new BigDecimal("5.0"));
 
-        SuperMarketOffersService offersService = new SuperMarketOffersService();
-        MultipleBuyOffer offerA = new MultipleBuyOffer(groceryItem, 2, new BigDecimal("8.0"));
+        SuperMarketOfferStore offerStore = new SuperMarketOfferStore();
 
-        offersService.register(offerA);
+        MultiBuyOffer offerA = new MultiBuyOffer(groceryItem, 2, new BigDecimal("8.0"));
 
-        assertEquals(offersService.getOffer("A").getNumberOfItems(), offerA.getNumberOfItems());
-        assertEquals(offersService.getOffer("A").getSpecialPrice(), offerA.getSpecialPrice());
-        assertEquals(offersService.getOffer("A").getDiscount(), offerA.getDiscount());
+        offerStore.storeOffer(offerA);
+
+        try {
+            MultiBuyOffer toTest = (MultiBuyOffer) offerStore.getOffer("A");
+            assertEquals(offerA.getNumberOfItems(), toTest.getNumberOfItems());
+            assertEquals(offerA.getSpecialPrice(), toTest.getSpecialPrice());
+            assertEquals(offerA.getItem().getStockKeepingUnit(),toTest.getItem().getStockKeepingUnit());
+            assertEquals(offerA.getItem().getUnitPrice(), toTest.getItem().getUnitPrice());
+        } catch (OfferNotFoundException e) {
+            assertTrue(false);
+        }
     }
+
+    @Test
+    void serviceShouldReturnFalseIfWeHaveNoOffer() {
+        GroceryItem groceryItem = new GroceryItem("A", new BigDecimal("5.0"));
+        MultiBuyOffer offerA = new MultiBuyOffer(groceryItem, 2, new BigDecimal("8.0"));
+
+        SuperMarketOfferStore offerStore = new SuperMarketOfferStore();
+        SuperMarketOffersService offersService = new SuperMarketOffersService(offerStore);
+
+        assertTrue(!offersService.hasOfferFor("A"));
+    }
+
+    @Test
+    void serviceShouldReturnTrueIfWeHaveAnOffer(){
+        GroceryItem groceryItem = new GroceryItem("A", new BigDecimal("5.0"));
+        MultiBuyOffer offerA = new MultiBuyOffer(groceryItem, 2, new BigDecimal("8.0"));
+
+        SuperMarketOfferStore offerStore = new SuperMarketOfferStore();
+        SuperMarketOffersService offersService = new SuperMarketOffersService(offerStore);
+
+        offersService.registerOffer(offerA);
+
+        assertTrue(offersService.hasOfferFor("A"));
+    }
+
 
     @Test
     void someTestAboutNegativePricesValidation() {
