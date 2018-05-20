@@ -20,11 +20,6 @@ public class SuperMarketWarehouse implements ItemStore {
     }
 
     @Override
-    public void removeItem(Item item) {
-        groceriesStock.remove(item.getStockKeepingUnit());
-    }
-
-    @Override
     public HashMap<String, Item> getItemsInStock() {
         return groceriesStock;
     }

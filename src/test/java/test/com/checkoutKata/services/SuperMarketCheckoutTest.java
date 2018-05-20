@@ -218,7 +218,7 @@ class SuperMarketCheckoutTest {
     }
 
     @Test
-    void ammountToPayshouldReturnZeroIfWeHaveScannedNoScannedItems() {
+    void ammuntToPayshouldReturnZeroIfWeHaveScannedNoScannedItems() {
         GroceryItem groceryItemA = new GroceryItem("A", new BigDecimal("50"));
         GroceryItem groceryItemB = new GroceryItem("B", new BigDecimal("30"));
         warehouse.storeItem(groceryItemA);

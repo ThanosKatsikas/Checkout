@@ -13,13 +13,6 @@ public class SuperMarketCheckout implements Checkout {
     private final SuperMarketWarehouse warehouse;
     private final SuperMarketOffersService offersService;
 
-    //TODO: This shouldn't be called, adjust first test.
-    public SuperMarketCheckout() {
-        this.scannedItems = new HashMap<String, Integer>();
-        this.warehouse = null;
-        this.offersService = null;
-    }
-
     public SuperMarketCheckout(SuperMarketWarehouse warehouse, SuperMarketOffersService offersService) {
         this.scannedItems = new HashMap<String, Integer>();
         this.warehouse = warehouse;

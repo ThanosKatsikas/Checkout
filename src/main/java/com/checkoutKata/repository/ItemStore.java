@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 public interface ItemStore {
     void storeItem(Item item);
-    void removeItem(Item item);
     HashMap<String, Item> getItemsInStock();
     BigDecimal retrieveItemPrice(String stockKeepingUnit) throws ItemNotFoundException;
 }
