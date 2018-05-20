@@ -71,7 +71,7 @@ class SuperMarketCheckoutTest {
         checkout.scanItem("B");
         checkout.scanItem("C");
 
-        assertEquals(new BigDecimal("15.77"), checkout.calculateTotal());
+        assertEquals( checkout.calculateTotal(), new BigDecimal("15.77"));
     }
 
     @Test
@@ -110,9 +110,6 @@ class SuperMarketCheckoutTest {
 
     @Test
     void serviceShouldReturnFalseIfWeHaveNoOffer() {
-        GroceryItem groceryItem = new GroceryItem("A", new BigDecimal("5.0"));
-        MultiBuyOffer offerA = new MultiBuyOffer(groceryItem, 2, new BigDecimal("8.0"));
-
         SuperMarketOfferStore offerStore = new SuperMarketOfferStore();
         SuperMarketOffersService offersService = new SuperMarketOffersService(offerStore);
 
@@ -132,6 +129,32 @@ class SuperMarketCheckoutTest {
         assertTrue(offersService.hasOfferFor("A"));
     }
 
+    @Test
+    void checkoutShouldCalculateSavingsIfThereAreOffersThatApplyToTheItemsScanned() {
+        GroceryItem groceryItemA = new GroceryItem("A", new BigDecimal("5.00"));
+        GroceryItem groceryItemB = new GroceryItem("B", new BigDecimal("3.00"));
+        GroceryItem groceryItemC = new GroceryItem("C", new BigDecimal("2.00"));
+        warehouse.storeItem(groceryItemA);
+        warehouse.storeItem(groceryItemB);
+        warehouse.storeItem(groceryItemC);
+
+        MultiBuyOffer offerA = new MultiBuyOffer(groceryItemA, 2, new BigDecimal("8.00"));
+
+        SuperMarketOfferStore offerStore = new SuperMarketOfferStore();
+        SuperMarketOffersService offersService = new SuperMarketOffersService(offerStore);
+
+        offersService.registerOffer(offerA);
+
+        checkout.scanItem("A");
+        checkout.scanItem("B");
+        checkout.scanItem("C");
+        checkout.scanItem("A");
+        checkout.scanItem("B");
+
+        assertEquals( new BigDecimal("18.00"),checkout.calculateTotal());
+        assertEquals( new BigDecimal("2.00"), checkout.calculateSavings());
+
+    }
 
     @Test
     void someTestAboutNegativePricesValidation() {
