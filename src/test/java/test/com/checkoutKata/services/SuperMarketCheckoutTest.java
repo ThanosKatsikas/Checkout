@@ -2,10 +2,12 @@ package test.com.checkoutKata.services;
 
 
 import com.checkoutKata.model.GroceryItem;
+import com.checkoutKata.repository.SuperMarketWarehouse;
 import com.checkoutKata.services.SuperMarketCheckout;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,16 +38,17 @@ class SuperMarketCheckoutTest {
         GroceryItem groceryA = new GroceryItem("A", new BigDecimal("5.0"));
         GroceryItem groceryB = new GroceryItem("B", new BigDecimal("6.55"));
         GroceryItem groceryC = new GroceryItem("C", new BigDecimal("4.22"));
-        HashSet<GroceryItem> itemsInStore = new HashSet<>();
-        itemsInStore.add(groceryA);
-        itemsInStore.add(groceryB);
-        itemsInStore.add(groceryC);
+        HashMap<String, GroceryItem> itemsInStore = new HashMap<>();
+        itemsInStore.put(groceryA.getStockKeepingUnit(), groceryA);
+        itemsInStore.put(groceryB.getStockKeepingUnit(), groceryB);
+        itemsInStore.put(groceryC.getStockKeepingUnit(), groceryC);
 
         // First we will need to somehow register the items and their price
         SuperMarketWarehouse warehouse = new SuperMarketWarehouse();
         warehouse.storeItem(groceryA);
         warehouse.storeItem(groceryB);
         warehouse.storeItem(groceryC);
+
 
         assertTrue(itemsInStore.equals(warehouse.getItemsInStock()));
     }
@@ -56,6 +59,7 @@ class SuperMarketCheckoutTest {
         warehouse.storeItem(new GroceryItem("A", new BigDecimal("5.0")));
         warehouse.storeItem(new GroceryItem("B", new BigDecimal("6.55")));
         warehouse.storeItem(new GroceryItem("C", new BigDecimal("4.22")));
+        warehouse.storeItem(new GroceryItem("A", new BigDecimal("5.0")));
 
         SuperMarketCheckout toTest = new SuperMarketCheckout(warehouse);
         toTest.scanItem("A");
@@ -63,6 +67,11 @@ class SuperMarketCheckoutTest {
         toTest.scanItem("C");
 
         assertEquals(new BigDecimal("15.77"), toTest.calculateTotal());
+    }
+
+    @Test
+    void shouldReturnTotalOfZeroIfWeaddItemThatDoesNotExist() {
+
     }
 
     @Test
@@ -74,6 +83,6 @@ class SuperMarketCheckoutTest {
     void someTestAboutNegativePricesValidation() {
         // :)
     }
-    
+
 
 }
