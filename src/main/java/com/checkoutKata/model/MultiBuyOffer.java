@@ -29,6 +29,8 @@ public class MultiBuyOffer extends Offer {
      */
     @Override
     void calculateReduction() {
-        this.discount = this.item.getUnitPrice().multiply(new BigDecimal(this.numberOfItems)).subtract(this.specialPrice);
+        this.discount = this.item.getUnitPrice()
+                .multiply(new BigDecimal(this.numberOfItems))
+                .subtract(this.specialPrice);
     }
 }

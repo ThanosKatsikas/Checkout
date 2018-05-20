@@ -234,7 +234,7 @@ class SuperMarketCheckoutTest {
 
     @Test
     void someTestAboutNegativePricesValidation() {
-        // :)
+        // We should add tests for validating input in the case we implemented a more dynamic way of loading items and offers.
     }
 
 

@@ -43,8 +43,7 @@ public class SuperMarketCheckout implements Checkout {
                         // The quotient of Items Scanned and Number of Items for the offer,
                         // multiplied by the discount of the offer.
                         return entryOffer.getDiscount()
-                                .multiply(
-                                        BigDecimal.valueOf(entry.getValue() / ((MultiBuyOffer)entryOffer).getNumberOfItems()));
+                                .multiply(BigDecimal.valueOf(entry.getValue() / ((MultiBuyOffer)entryOffer).getNumberOfItems()));
                     }
                     return BigDecimal.ZERO;
                 })
